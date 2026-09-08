@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standard Reserve — branch ROI calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0e0e0d;
+    color: #ececea;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .wrap { max-width: 480px; width: 100%; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 8px; letter-spacing: -0.01em; }
+  p.sub { font-size: 14px; color: #9c9c98; margin: 0 0 32px; line-height: 1.6; }
+  .field { margin-bottom: 28px; }
+  label { display: block; font-size: 13px; color: #b5b5b0; margin-bottom: 10px; }
+  input[type="range"] { width: 100%; accent-color: #d85a30; }
+  .val { font-size: 13px; color: #6e6e6a; margin-top: 6px; }
+  .result { background: #1a1a18; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .result p.label { font-size: 13px; color: #9c9c98; margin: 0 0 6px; }
+  .result p.value { font-size: 30px; font-weight: 500; margin: 0; }
+  .result p.note { font-size: 13px; color: #9c9c98; margin: 8px 0 0; }
+  footer { font-size: 12px; color: #6e6e6a; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Standard Reserve: branch ROI calculator</h1>
+  <p class="sub">How many days it takes a new branch license to pay for itself, given the price you paid and its estimated daily yield.</p>
+
+  <div class="field">
+    <label for="price">License price paid (STANDARD)</label>
+    <input type="range" min="50" max="5000" value="800" step="10" id="price">
+    <div class="val" id="priceVal">800 STANDARD</div>
+  </div>
+
+  <div class="field">
+    <label for="yield">Estimated daily yield of this branch (STANDARD/day)</label>
+    <input type="range" min="1" max="200" value="20" step="1" id="yield">
+    <div class="val" id="yieldVal">20 STANDARD/day</div>
+  </div>
+
+  <div class="result">
+    <p class="label">Breakeven time</p>
+    <p class="value" id="daysOut">-- days</p>
+    <p class="note" id="note"></p>
+  </div>
+
+  <footer>
+    Rough estimate only — actual yield shifts as total network branches change.<br>
+    Unofficial fan tool, not affiliated with the Standard Reserve team.
+  </footer>
+</div>
+
+<script>
+function fmt(n) { return n.toLocaleString(); }
+function update() {
+  var price = parseInt(document.getElementById('price').value);
+  var y = parseInt(document.getElementById('yield').value);
+  document.getElementById('priceVal').textContent = fmt(price) + ' STANDARD';
+  document.getElementById('yieldVal').textContent = fmt(y) + ' STANDARD/day';
+  var days = Math.ceil(price / y);
+  document.getElementById('daysOut').textContent = fmt(days) + ' days';
+  var note = days <= 14 ? 'fast payback at this yield' : (days <= 45 ? 'moderate payback window' : 'slow payback, yield would need to hold steady a while');
+  document.getElementById('note').textContent = note;
+}
+document.getElementById('price').addEventListener('input', update);
+document.getElementById('yield').addEventListener('input', update);
+update();
+</script>
+</body>
+</html>
